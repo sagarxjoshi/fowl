@@ -1,0 +1,37 @@
+# ==========================================
+# CMake Build Artifacts & Output Binaries
+# ==========================================
+out/
+build/
+bin/
+
+# ==========================================
+# Visual Studio Internal Files
+# ==========================================
+.vs/
+*.user
+*.suo
+*.sln
+*.vcxproj
+*.filters
+
+# ==========================================
+# Package Manager Caches (vcpkg)
+# ==========================================
+vcpkg_installed/
+.vcpkg-root
+
+# ==========================================
+# Compiler & Linker Temporary Outputs
+# ==========================================
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.lib
+*.dll
+*.so
+*.a
+*.o
+
+
