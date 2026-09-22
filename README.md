@@ -1,7 +1,7 @@
 # **fowl** 
 
 *(*f owl*) is a cross-platform CLI based file analysis utility.*
-*Current version provides features such as type sniffinc, hash enumeration and file size*
+*Current version provides features such as type sniffing, hash enumeration and file size*
 
 # Build
 

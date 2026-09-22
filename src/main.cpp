@@ -4,7 +4,11 @@
 #include <map>
 #include <vector>
 #include <iomanip>
-#include <openssl\evp.h>
+#if defined(_WIN32)
+  #include <openssl\evp.h>
+#elif defined(__linux__)
+  #include <openssl/evp.h>
+#endif
 
 
 /* type aliases */
@@ -194,14 +198,14 @@ int main(int argc, char *argv[]) {
 			std::cout << std::endl;
 		
 			/* check if valid cypto function is provided by user input */
-			if (((argc > 2) && (std::count(digestTypes.begin(), digestTypes.end(), argv[2])) == false)) {
+			if (((argc == 3) && (std::count(digestTypes.begin(), digestTypes.end(), argv[2])) == false)) {
 
 				std::cout << "Invalid cryptographic algorithm. Refer help menu.";
 				return -1;
 
 
 			}
-			else {
+			else if((argc == 3) && (std::count(digestTypes.begin(), digestTypes.end(), argv[2])) == true) {
 
 				/* enum digest */
 				std::string digestType = argv[2];
