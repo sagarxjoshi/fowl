@@ -4,6 +4,8 @@
 #include <map>
 #include <vector>
 #include <iomanip>
+#include <sstream>
+#include "file_types.h"
 #if defined(_WIN32)
   #include <openssl\evp.h>
 #elif defined(__linux__)
@@ -19,7 +21,7 @@ typedef unsigned char uchar;
 const std::vector<std::string> digestTypes = { "sha256", "md5", "sha512"};
 
 /* calculate file size */
-uint calculateSize(std::string file) {
+std::string calculateSize(std::string file) {
 
 	// input stream with cursor set at end of file
 	std::ifstream pfile;
@@ -28,15 +30,34 @@ uint calculateSize(std::string file) {
 	if (!pfile) {
 
 		std::cout << "Unable to open the file" << std::endl;
-		return 1;
+		exit(-1);
 	}
 
 	// end of file position captured as size
 	std::streamsize size = pfile.tellg();
+  int intSize;
+  
+  if (size > 1024  and size <= 1048576) {
 
-	pfile.close();
+    intSize = static_cast<int>(size) / 1024;
+    pfile.close();
+    std::string message = std::to_string(intSize) + "MB";
+    return message;
 
-	return size;
+  }else if( size > 1048576 ){
+
+    intSize = static_cast<int>(size) / 1048576;
+    pfile.close(); 
+    std::string message = std::to_string(size) + "GB";
+    return message;
+
+  }else{
+
+    pfile.close(); 
+    std::string message = std::to_string(size) + "bytes";
+    return message;
+
+  }
 	
 }
 
@@ -45,29 +66,56 @@ void checkType(std::string file) {
 
 	// string var for magic bytes
 	std::string mbytes;
-	std::map<std::string, std::string> extensions = { 
-		{"MZ", "executable"}, 
-		{"%PDF", "PDF document"}, 
-		{"PK", "Office Doc\\Compressed archive"},
-		{"ELF", "ELF binary"}
-	};
-	std::fstream pfile(file);
+  std::stringstream hexstream;
+  std::streamsize fileSize;
+  int mbyteLength;
+	std::fstream pfile(file, std::ios::in | std::ios::binary | std::ios::ate);
 
 	if (!pfile) {
 
 		std::cout << "Unable to open the file" << std::endl;
 		exit(-1);
 	}
+  
+  // calculate file size
+  fileSize = pfile.tellg();
+
+  // move the cursor back to start of file
+  pfile.seekg(0, std::ios::beg);
+
+  // define a char buffer equal to file size
+  std::vector<char> buffer(fileSize);
 
 	// extracting initial bytes of data from file, stops at first white character
-	pfile >> mbytes;
+  
+  if(pfile.read(buffer.data(), fileSize)){
+      
+    // read first 10 bytes
+    for(int i = 0; i < 10; i++){
+
+      hexstream << std::setfill('0') << 
+      std::setw(2) << std::hex << (int)buffer[i];
+
+    }
+    
+    // storing first 10 bytes as string
+    mbytes = hexstream.str();
+
+  }else{
+
+    std::cerr << "Could not read file." << std::endl;
+
+  }
 
 	pfile.close();
-
+  
+  // iterate over pre-defined map for file types and compare
 	for (auto ext : extensions) {
-
-		if (mbytes.find(ext.first) != std::string::npos) {
-
+   
+    // length of magic byte string to be compared 
+    mbyteLength = ext.first.length();   
+		if (mbytes.compare(0, mbyteLength, ext.first, 0, mbyteLength) == 0) {
+   
 			std::cout << "File Type: " << ext.second << std::endl;
 			break;
 
@@ -193,7 +241,9 @@ int main(int argc, char *argv[]) {
 
 			/* File type and size */
 			std::string fileName = argv[1];
-			std::cout << "File Size: " << calculateSize(fileName) << " bytes" << std::endl;
+			std::cout << "File Size: ";
+      std::cout << calculateSize(fileName);
+      std::cout << std::endl;
 			checkType(fileName);
 			std::cout << std::endl;
 		

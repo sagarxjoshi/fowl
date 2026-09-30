@@ -1,7 +1,7 @@
 # **fowl** 
 
 *(*f owl*) is a cross-platform CLI based file analysis utility.*
-*Current version provides features such as type sniffing, hash enumeration and file size*
+*Current version provides features such as type sniffing, file size & hash enumeration*
 
 # Build
 
@@ -28,7 +28,7 @@ cmake --build out/build/
 
 4. **Dependencies**
 
-# Linux - Build tools and OpenSSL
+### Linux - Build tools and OpenSSL
 
 
 ```bash
@@ -36,5 +36,6 @@ sudo apt update
 sudo apt install build-essential cmake libssl-dev
 ```
 
+# Ouput
 
-
+![Terminal Demo](https://github.com/user-attachments/assets/69cfdd1e-48b0-43fe-ae75-3ce5665b2b83)

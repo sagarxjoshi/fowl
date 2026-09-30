@@ -27,10 +27,12 @@ set(SOURCES
 
 set(HEADERS
     # Add your .h or .hpp files here if you have any
+    "include/file_types.h"
 )
 # -------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
 
